@@ -1,0 +1,110 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
+
+<dom-module id="yakb-home">
+  <template>
+    <style include="shared-styles iron-flex iron-flex-alignment">
+      :host {
+        display: flex;
+        flex-direction:row;
+        flex-wrap:wrap;
+
+        padding: 10px;
+      }
+      .board {
+        width:200px;
+        height:100px;
+      }
+      .create-board {
+        color:goldenrod;
+        position:relative;
+        width:200px;
+        height:100px;
+        background:white;
+        @apply(--shadow-elevation-2dp);
+      }
+      .create-board:hover {
+        @apply(--shadow-elevation-4dp);
+      }
+      .create-options {
+        z-index:-1;
+        position:absolute;
+        top:0;
+        left:0;
+        right:0;
+        bottom:0;
+      }
+      .create-options[active] {
+        z-index:10;
+      }
+      .fullscreen-dialog {
+        /*margin:0;*/
+        /*width:100%;*/
+        /*height:100%;*/
+      }
+      .dialog-content {
+        color:black
+      }
+    </style>
+    <paper-dialog entry-animation="scale-up-animation"
+              exit-animation="fade-out-animation"
+              class="fullscreen-dialog"
+              opened$="{{optionsActive}}">
+
+      <div class="dialog-content">
+        <paper-icon-button icon="close" dialog-dismiss></paper-icon-button>
+        <paper-input label="Board name" value="{{newBoardName}}"></paper-input>
+        <paper-icon-button icon="done" disabled$="[[!valid]]"
+          dialog-confirm on-tap="_fireCreateBoard"></paper-icon-button>
+      </div>
+
+    </paper-dialog>
+    <div id="home-container">
+      <template is="dom-repeat" items="[[boards]]">
+        <a href="/board/[[item.id]]">
+          <paper-card heading="[[item.name]]" class="board">
+            <div class="card-content">
+              [[item.description]]
+            </div>
+          </paper-card>
+        </a>
+      </template>
+      <paper-icon-button class="create-board" icon="add" on-tap="_unveilCreate">
+      </paper-icon-button>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'yakb-home',
+      properties:{
+      },
+      _fireCreateBoard(e) {
+        this.dispatchEvent(new CustomEvent('create-board',
+          {bubbles: true, detail: {boardName: this.newBoardName}}
+        ))
+      },
+      _unveilCreate(e) {
+        this.$$('paper-dialog').open();
+      }
+    });
+  </script>
+</dom-module>

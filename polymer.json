@@ -1,0 +1,19 @@
+{
+  "entrypoint": "index.html",
+  "shell": "src/yakb-app.html",
+  "fragments": [
+    "src/yakb-home.html",
+    "src/yakb-board.html",
+    "src/yakb-view3.html",
+    "src/yakb-view404.html"
+  ],
+  "sourceGlobs": [
+   "src/**/*",
+   "images/**/*",
+   "bower.json"
+  ],
+  "includeDependencies": [
+    "manifest.json",
+    "bower_components/webcomponentsjs/webcomponents-lite.min.js"
+  ]
+}

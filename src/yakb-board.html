@@ -1,0 +1,108 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/polymer-sortablejs/polymer-sortablejs.html"/>
+
+<link rel="import" href="shared-styles.html">
+<script src="../bower_components/Sortable/Sortable.min.js"></script>
+<script src="../bower_components/underscore/underscore-min.js"></script>
+<dom-module id="yakb-board">
+  <template>
+    <style include="shared-styles iron-flex iron-flex-alignment">
+      :host {
+        display: block;
+        position:relative;
+        padding: 10px;
+      }
+      .list-container {
+        width:300px;
+        display:flex;
+        flex-direction:column;
+        background:#eee;
+        @apply(--shadow-elevation-4dp);
+        /*height:100%;*/
+      }
+      .list-container > paper-card {
+        margin: 2px 5px;
+        padding:5px;
+      }
+      .header-slice {
+        display:flex;
+        flex-direction:row;
+        justify-content:space-between;
+        align-items:center;
+        /*@apply(--shadow-elevation-6dp);*/
+        padding-left:5px;
+        color:grey;
+      }
+      .header-slice > h2 {
+        padding:0;
+        margin:0;
+      }
+      iron-list {
+        padding: 2px 5px;
+      }
+      iron-list paper-card {
+        padding-left:5px;
+      }
+      sortable-js {
+        display:flex;
+        flex-direction:row;
+      }
+    </style>
+    <app-route
+        route="{{route}}"
+        pattern="/:board"
+        data="{{routeData}}"></app-route>
+    <sortable-js>
+      <template is="dom-repeat" as="list"
+        items="[[_selectedBoardLists(boards, routeData.board)]]">
+        <div class="list-container">
+          <div class="header-slice">
+            <h2>[[list.name]]</h2>
+            <paper-icon-button icon="more-horiz">
+            </paper-icon-button>
+          </div>
+          <iron-list items="[[cardList(list)]]" as="card">
+            <template>
+              <paper-card>
+                [[card.title]]
+              </paper-card>
+            </template>
+          </iron-list>
+          <paper-card>
+            <paper-input label="Add a new card..."></paper-input>
+          </paper-card>
+        </div>
+      </template>
+    </sortable-js>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'yakb-board',
+      _selectedBoardLists(boards, boardId) {
+        return _.values(this.boards.find((board) => board.id == boardId)._lists)
+      },
+      cardList(list) {
+        console.log(list._cards);
+        return _.values(list._cards);
+      }
+    });
+  </script>
+</dom-module>
